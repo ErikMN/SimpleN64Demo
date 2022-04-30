@@ -1,14 +1,18 @@
 /* Create DL/Display processing and game processing */
 // https://ultra64.ca/files/documentation/online-manuals/man-v5-2/allman52/n64man/n64man.htm
 #include <assert.h>
+#include <stdbool.h>
 #include <nusys.h>
 #include "main.h"
 #include "graphic.h"
 
-static float theta;    /* The rotational angle of the square */
+static float theta;    /* The rotational angle of the model */
 static float triPos_x; /* The display position-X */
 static float triPos_y; /* The display position-Y */
 static float triPos_z; /* The display position-Z */
+static float roll;     /* Angle of rotation of roll (in degrees, x-axis) */
+static float pitch;    /* Angle of rotation of pitch (in degrees, y-axis) */
+static int model;      /* Select the model to be rendered */
 
 void shadetri(Dynamic *dynamicp);
 void shadecube(Dynamic *dynamicp);
@@ -23,8 +27,11 @@ initGame(void)
 {
   triPos_x = 0.0;
   triPos_y = 0.0;
-  triPos_z = 0.0;
+  triPos_z = -300.0;
   theta = 0.0;
+  roll = 0.0;
+  pitch = 0.0;
+  model = 1;
 }
 
 /* Make the display list and activate the task */
@@ -46,32 +53,39 @@ makeDL(void)
 
   // https://ultra64.ca/files/documentation/online-manuals/man-v5-2/allman52/n64man/gu/gu_INDEX.htm
 
-  /* projection, modeling matrix set */
-  // https://ultra64.ca/files/documentation/online-manuals/man-v5-2/allman52/n64man/gu/guOrtho.htm
-
-  guOrtho(&dynamicp->projection,    // Pointer to 4x4 projection matrix resulting from calculation
-          -(float)SCREEN_WD / 2.0F, // Near plane's lower-left x coordinate
-          (float)SCREEN_WD / 2.0F,  // Near plane's upper-right x coordinate
-          -(float)SCREEN_HT / 2.0F, // Near plane's lower-left y coordinate
-          (float)SCREEN_HT / 2.0F,  // Near plane's upper-right y coordinate
-          -999.0F,                  // z-coordinate of near clipping plane
-          999.0F,                   // z-coordinate of far clipping plane
-          1.0F);                    // Scale for matrix elements
+  // https://ultra64.ca/files/documentation/online-manuals/man-v5-2/allman52/n64man/gu/guPerspective.htm
+  guPerspective(&dynamicp->projection, // Pointer to the resulting 4x4 projection matrix
+                perspNorm,             // Pointer to the resulting numerical value
+                60.0F,                 // The angle of view in the vertical (y) direction (0 ~ 180 degrees)
+                (f32)SCREEN_WD /
+                    (f32)SCREEN_HT, // The aspect ratio (width/height) setting the view in the horizontal (x) direction
+                10.0F,              // Distance from viewpoint to near clipping plane
+                999.0F,             // Distance from viewpoint to far clipping plane
+                1.0F);              // Scale for matrix elements
 
   // https://ultra64.ca/files/documentation/online-manuals/man-v5-2/allman52/n64man/gu/guRotate.htm
-  guRotate(&dynamicp->modeling, theta, 1.0F, 1.0F, 1.0F);
-
-  // guRotate(&dynamicp->modeling, triPos_x, 1.0F, 0.0F, 0.0F);
-  // guRotate(&dynamicp->modeling, triPos_y, 0.0F, 1.0F, 0.0F);
+  guRotate(&dynamicp->rotate, theta, 0.0F, 0.0F, 1.0F);
 
   // https://ultra64.ca/files/documentation/online-manuals/man-v5-2/allman52/n64man/gu/guTranslate.htm
-  guTranslate(&dynamicp->translate, triPos_x, triPos_y, triPos_z);
+  guTranslate(&dynamicp->translate, triPos_x, triPos_y, 0.0F);
 
-  /* Draw a square */
-  // shadetri(dynamicp);
+  // https://ultra64.ca/files/documentation/online-manuals/man-v5-2/allman52/n64man/gu/guPosition.htm
+  // (m, roll, pitch, yaw, scale, x-trans, y-trans, z-trans)
+  guPosition(&dynamicp->position, 0.0F, 0.0F, 0.0F, 1.0F, 0.0F, 0.0F, triPos_z);
+  guPosition(&dynamicp->roll, roll, 0.0F, 0.0F, 1.0F, 0.0F, 0.0F, 0.0F);
+  guPosition(&dynamicp->pitch, 0.0F, pitch, 0.0F, 1.0F, 0.0F, 0.0F, 0.0F);
 
-  /* Draw a cube */
-  shadecube(dynamicp);
+  switch (model) {
+  case 1:
+    /* Draw a cube */
+    shadecube(dynamicp);
+    break;
+  case 2:
+    /* Draw a square */
+    shadetri(dynamicp);
+  default:
+    break;
+  }
 
   gDPFullSync(glistp++);
   gSPEndDisplayList(glistp++);
@@ -96,6 +110,18 @@ makeDL(void)
 
     nuDebConTextPos(0, 12, 25);
     sprintf(conbuf, "triPos_z=%5.1f", triPos_z);
+    nuDebConCPuts(0, conbuf);
+
+    nuDebConTextPos(0, 12, 26);
+    sprintf(conbuf, "Roll=%5.1f", roll);
+    nuDebConCPuts(0, conbuf);
+
+    nuDebConTextPos(0, 12, 27);
+    sprintf(conbuf, "Pitch=%5.1f", pitch);
+    nuDebConCPuts(0, conbuf);
+
+    nuDebConTextPos(0, 12, 28);
+    sprintf(conbuf, "Angle=%5.1f", theta);
     nuDebConCPuts(0, conbuf);
   } else {
     nuDebConTextPos(0, 9, 24);
@@ -124,36 +150,108 @@ updateGame(void)
   triPos_y = contdata->stick_y;
 
   /* The reverse rotation by the A button */
-  if (contdata[0].trigger & A_BUTTON) {
+  if (contdata[0].trigger & START_BUTTON) {
     vel = -vel;
-    // NOTE: osSyncPrintf doesn't work with emulators?
-    // osSyncPrintf("A button Push\n");
-
-    // triPos_z -= 100;
-
     nuDebConTextPos(0, 12, 1);
-    sprintf(conbuf, "A button Push");
+    sprintf(conbuf, "START button Push");
     nuDebConCPuts(0, conbuf);
     nuDebConDisp(NU_SC_SWAPBUFFER);
   }
   nuDebConClear(0);
+
   // http://ultra64.ca/files/documentation/online-manuals/functions_reference_manual_2.0i/nusys/nuDebConDisp.html
   nuDebConDisp(NU_SC_SWAPBUFFER);
-
-  /* Rotate fast while pushing the B button */
-  if (contdata[0].button & B_BUTTON) {
-    theta += vel * 5.0;
-    nuDebConTextPos(0, 12, 2);
-    sprintf(conbuf, "B button hold");
-    nuDebConCPuts(0, conbuf);
-  } else {
-    theta += vel;
-  }
 
   if (theta > 360.0) {
     theta -= 360.0;
   } else if (theta < 0.0) {
     theta += 360.0;
+  }
+
+  if (roll > 360.0) {
+    roll -= 360.0;
+  } else if (roll < 0.0) {
+    roll += 360.0;
+  }
+
+  if (pitch > 360.0) {
+    pitch -= 360.0;
+  } else if (pitch < 0.0) {
+    pitch += 360.0;
+  }
+
+  if (contdata[0].button & A_BUTTON) {
+    nuDebConTextPos(0, 12, 2);
+    sprintf(conbuf, "A button hold");
+    nuDebConCPuts(0, conbuf);
+    roll += vel;
+  }
+
+  if (contdata[0].button & B_BUTTON) {
+    nuDebConTextPos(0, 12, 2);
+    sprintf(conbuf, "B button hold");
+    nuDebConCPuts(0, conbuf);
+    pitch += vel;
+  }
+
+  if (contdata[0].button & L_TRIG) {
+    nuDebConTextPos(0, 12, 2);
+    sprintf(conbuf, "L button hold");
+    nuDebConCPuts(0, conbuf);
+    triPos_z += vel;
+  }
+
+  if (contdata[0].button & R_TRIG) {
+    nuDebConTextPos(0, 12, 2);
+    sprintf(conbuf, "R button hold");
+    nuDebConCPuts(0, conbuf);
+    triPos_z -= vel;
+  }
+
+  if (contdata[0].button & Z_TRIG) {
+    nuDebConTextPos(0, 12, 2);
+    sprintf(conbuf, "Z button hold");
+    nuDebConCPuts(0, conbuf);
+    theta -= vel;
+  }
+
+  /* Reset the postition */
+  if (contdata[0].button & U_CBUTTONS) {
+    nuDebConTextPos(0, 12, 1);
+    sprintf(conbuf, "GAME RESET!");
+    nuDebConCPuts(0, conbuf);
+    initGame();
+  }
+
+  /* Switch the model */
+  if (contdata[0].trigger & D_CBUTTONS) {
+    if (model == 1) {
+      model = 2;
+    } else if (model == 2) {
+      model = 1;
+    }
+
+    nuDebConTextPos(0, 12, 1);
+    if (model == 1) {
+      sprintf(conbuf, "CUBE");
+    } else if (model == 2) {
+      sprintf(conbuf, "SQUARE");
+    }
+    nuDebConCPuts(0, conbuf);
+  }
+
+  if (contdata[0].button & L_CBUTTONS) {
+    nuDebConTextPos(0, 12, 1);
+    sprintf(conbuf, "FASTER");
+    nuDebConCPuts(0, conbuf);
+    vel = 5;
+  }
+
+  if (contdata[0].button & R_CBUTTONS) {
+    nuDebConTextPos(0, 12, 1);
+    sprintf(conbuf, "SLOWER");
+    nuDebConCPuts(0, conbuf);
+    vel = 1;
   }
 }
 
@@ -161,7 +259,7 @@ updateGame(void)
 // clang-format off
 static Vtx shade_vtx[] =  {
   { -64,  64, -5, 0, 0, 0, 0x00, 0xff, 0x00, 0xff },
-  {  64,  64, -5, 0, 0, 0, 0x00, 0x00, 0x00, 0xff },
+  {  64,  64, -5, 0, 0, 0, 0xff, 0x00, 0x00, 0xff },
   {  64, -64, -5, 0, 0, 0, 0x00, 0x00, 0xff, 0xff },
   { -64, -64, -5, 0, 0, 0, 0xff, 0x00, 0x00, 0xff },
 };
@@ -173,12 +271,16 @@ shadetri(Dynamic *dynamicp)
 {
   gSPMatrix(glistp++, OS_K0_TO_PHYSICAL(&(dynamicp->projection)), G_MTX_PROJECTION | G_MTX_LOAD | G_MTX_NOPUSH);
   gSPMatrix(glistp++, OS_K0_TO_PHYSICAL(&(dynamicp->translate)), G_MTX_MODELVIEW | G_MTX_LOAD | G_MTX_NOPUSH);
-  gSPMatrix(glistp++, OS_K0_TO_PHYSICAL(&(dynamicp->modeling)), G_MTX_MODELVIEW | G_MTX_MUL | G_MTX_NOPUSH);
+  gSPMatrix(glistp++, OS_K0_TO_PHYSICAL(&(dynamicp->rotate)), G_MTX_MODELVIEW | G_MTX_MUL | G_MTX_NOPUSH);
+  gSPMatrix(glistp++, OS_K0_TO_PHYSICAL(&(dynamicp->position)), G_MTX_MODELVIEW | G_MTX_MUL | G_MTX_NOPUSH);
+  gSPMatrix(glistp++, OS_K0_TO_PHYSICAL(&(dynamicp->roll)), G_MTX_MODELVIEW | G_MTX_MUL | G_MTX_NOPUSH);
+  gSPMatrix(glistp++, OS_K0_TO_PHYSICAL(&(dynamicp->pitch)), G_MTX_MODELVIEW | G_MTX_MUL | G_MTX_NOPUSH);
 
   gSPVertex(glistp++, shade_vtx, ARRAY_SIZE(shade_vtx), 0);
 
   gDPPipeSync(glistp++);
   gDPSetCycleType(glistp++, G_CYC_1CYCLE);
+  gSPPerspNormalize(glistp++, &perspNorm);
   gDPSetRenderMode(glistp++, G_RM_AA_OPA_SURF, G_RM_AA_OPA_SURF2);
   gSPClearGeometryMode(glistp++, 0xFFFFFFFF);
   gSPSetGeometryMode(glistp++, G_SHADE | G_SHADING_SMOOTH);
@@ -236,7 +338,10 @@ shadecube(Dynamic *dynamicp)
   // https://ultra64.ca/files/documentation/online-manuals/man-v5-2/allman52/n64man/gsp/gSPMatrix.htm
   gSPMatrix(glistp++, OS_K0_TO_PHYSICAL(&(dynamicp->projection)), G_MTX_PROJECTION | G_MTX_LOAD | G_MTX_NOPUSH);
   gSPMatrix(glistp++, OS_K0_TO_PHYSICAL(&(dynamicp->translate)), G_MTX_MODELVIEW | G_MTX_LOAD | G_MTX_NOPUSH);
-  gSPMatrix(glistp++, OS_K0_TO_PHYSICAL(&(dynamicp->modeling)), G_MTX_MODELVIEW | G_MTX_MUL | G_MTX_NOPUSH);
+  gSPMatrix(glistp++, OS_K0_TO_PHYSICAL(&(dynamicp->rotate)), G_MTX_MODELVIEW | G_MTX_MUL | G_MTX_NOPUSH);
+  gSPMatrix(glistp++, OS_K0_TO_PHYSICAL(&(dynamicp->position)), G_MTX_MODELVIEW | G_MTX_MUL | G_MTX_NOPUSH);
+  gSPMatrix(glistp++, OS_K0_TO_PHYSICAL(&(dynamicp->roll)), G_MTX_MODELVIEW | G_MTX_MUL | G_MTX_NOPUSH);
+  gSPMatrix(glistp++, OS_K0_TO_PHYSICAL(&(dynamicp->pitch)), G_MTX_MODELVIEW | G_MTX_MUL | G_MTX_NOPUSH);
 
   // Loads into the RSP vertex buffer the vertices that will be used by the gSPXTriangle commands that generates
   // polygons. https://ultra64.ca/files/documentation/online-manuals/man-v5-2/allman52/n64man/gsp/gSPVertex.htm
@@ -244,6 +349,10 @@ shadecube(Dynamic *dynamicp)
 
   gDPPipeSync(glistp++);
   gDPSetCycleType(glistp++, G_CYC_1CYCLE);
+
+  /* Scaling of same dimension coordinates */
+  gSPPerspNormalize(glistp++, &perspNorm);
+
   // https://ultra64.ca/files/documentation/online-manuals/man-v5-2/allman52/n64man/gdp/gDPSetRenderMode.htm
   // (AA_: Antialiasing, RA_: Simple antialiasing (not as pretty as AA, but somewhat faster), ZB_: Z-buffering)
   gDPSetRenderMode(glistp++, G_RM_AA_ZB_OPA_SURF, G_RM_AA_ZB_OPA_SURF2);

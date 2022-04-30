@@ -24,6 +24,9 @@ mainproc(void)
   /* The initialization of the controller manager  */
   contPattern = nuContInit();
 
+  /* Set special VI functions */
+  osViSetSpecialFeatures(OS_VI_GAMMA_OFF | OS_VI_GAMMA_DITHER_OFF | OS_VI_DIVOT_OFF | OS_VI_DITHER_FILTER_OFF);
+
   /* The initialization for the "game" */
   initGame();
 

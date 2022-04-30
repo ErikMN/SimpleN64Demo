@@ -12,8 +12,11 @@
 /* The structure of the projection-matrix  */
 typedef struct {
   Mtx projection;
-  Mtx modeling;
   Mtx translate;
+  Mtx rotate;
+  Mtx position;
+  Mtx roll;
+  Mtx pitch;
 } Dynamic;
 
 /* Parameters */
@@ -21,6 +24,7 @@ extern Dynamic gfx_dynamic[];
 extern Gfx *glistp;
 extern Gfx gfx_glist[][GFX_GLIST_LEN];
 extern u32 gfx_gtask_no;
+extern u16 *perspNorm;
 
 /* Graphics functions */
 extern void gfxRCPInit(void);

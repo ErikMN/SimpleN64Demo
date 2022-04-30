@@ -96,6 +96,14 @@ run_mupen: $(TARGETS)
 debug:
 	@cen64 -debug localhost:8080 $(PIFDATA) $(TARGETS)
 
+cppcheck:
+	@echo -e "${PURPLE}*** Static code analysis${NC}"
+	@find . -name "*.[ch]" | xargs cppcheck --error-exitcode=1 --verbose --enable=all --suppress=unusedFunction
+
+indent:
+	@echo -e "${PURPLE}*** Formatting code${NC}"
+	@find . -name "*.[ch]" | xargs clang-format -style=file -i -fallback-style=none
+
 vars:
 	@echo -e "${YELLOW}*** Debug info${NC}"
 	@echo "ROOT:" $(ROOT)

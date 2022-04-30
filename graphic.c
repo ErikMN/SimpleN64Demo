@@ -6,6 +6,7 @@ Gfx gfx_glist[2][GFX_GLIST_LEN];
 Dynamic gfx_dynamic[2];
 Gfx *glistp = NULL;
 u32 gfx_gtask_no = 0;
+u16 *perspNorm;
 
 /*
   The viewport structure
