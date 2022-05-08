@@ -8,7 +8,7 @@
       "name": "DEBUG",
       "type": "cppdbg",
       "request": "launch",
-      "program": "${workspaceFolder}/${workspaceFolderBasename}.out",
+      "program": "${workspaceFolder}/SimpleN64Demo/SimpleN64Demo.out",
       "args": [],
       "stopAtEntry": false,
       "cwd": "${workspaceFolder}",
