@@ -1,6 +1,11 @@
 # SimpleN64Demo
 
-Simple Nintendo64 application using NuSystem abstraction layer.
+Simple Nintendo64 application using Nintendo libraries.
+
+```text
+├── SDK                 // Pre-built ready-to-use N64 SDK for Linux
+└── SimpleN64DemoNusys  // Demo using NuSystem abstraction layer
+```
 
 ## Setup toolchain
 
