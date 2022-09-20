@@ -24,6 +24,20 @@ export ROOT=$N64_ROOT/N64_SDK/ultra
 export GCCDIR=$ROOT/GCC
 ```
 
+## Problems
+
+If you get an error message when building stating something like:
+
+```bash
+../mips64-elf/bin/as: error while loading shared libraries: libopcodes-2.34.so: cannot open shared object file: No such file or directory
+```
+
+You will need to set LD_LIBRARY_PATH to point to the lib directory of the toolchain:
+
+```bash
+export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:$N64_TOOLCHAIN/tools/x86_64-pc-linux-gnu/mips64-elf/lib/
+```
+
 ## Emulators
 
 <https://github.com/n64dev/cen64>

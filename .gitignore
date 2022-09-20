@@ -2,3 +2,4 @@
 *.out
 *.n64
 core
+.vscode/*.log
