@@ -3,7 +3,7 @@
 Simple Nintendo64 application using Nintendo libraries.
 
 ```text
-├── SDK                 // Pre-built ready-to-use N64 SDK for Linux
+├── SimpleN64Demo       // Demo using libultra
 └── SimpleN64DemoNusys  // Demo using NuSystem abstraction layer
 ```
 
@@ -11,12 +11,16 @@ Simple Nintendo64 application using Nintendo libraries.
 
 <https://github.com/trhodeos/modern-n64sdk>
 
+```bash
+git clone https://github.com/ErikMN/N64_SDK.git
+```
+
 ### Environment variables
 
 Set the following variables in your shell configuration file.
 
 ```bash
-export N64_ROOT=$HOME/Dev/N64
+export N64_ROOT=$HOME/N64DevLinux
 export N64KITDIR=$N64_ROOT/N64_SDK/nintendo/n64kit
 export N64_TOOLCHAIN=$N64_ROOT/N64_TOOLCHAIN
 export PATH="$N64_TOOLCHAIN/tools/bin:$PATH"
