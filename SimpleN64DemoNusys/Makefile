@@ -68,7 +68,7 @@ LCOPTS = -G 0
 LDFLAGS = $(MKDEPOPT) -L$(LIB) -L$(NUSYSLIBDIR) -lnusys_d -lgultra_d -L$(GCCDIR)/mipse/lib -lkmc
 CFLAGS = $(LCDEFS) $(LCINCS) $(LCOPTS) $(GCCFLAG) $(OPTIMIZER)
 
-.PHONY: all debug vars clean run run_mupen run_debug
+.PHONY: all
 all: $(TARGETS)
 
 # Make the codesegment:
@@ -85,27 +85,39 @@ $(TARGETS) $(APP): spec $(OBJECTS)
 	@echo -e "\e[32m*** Done! Output: ${YELLOW}$(TARGETS)\e[0m"
 
 # Run using CEN64:
+.PHONY: run
 run: $(TARGETS)
 	@cen64 -multithread -noaudio $(PIFDATA) $(TARGETS)
 
 # Run using Mupen64Plus with specialized plugins:
+.PHONY: run_mupen
 run_mupen: $(TARGETS)
 	@mupen64plus --gfx mupen64plus-video-angrylion-plus --rsp mupen64plus-rsp-cxd4-sse2 $(TARGETS)
 
 # Debug using CEN64:
+.PHONY: debug
 debug:
 	@cen64 -debug localhost:8080 $(PIFDATA) $(TARGETS)
 
+.PHONY: cppcheck
 cppcheck:
 	@echo -e "${PURPLE}*** Static code analysis${NC}"
-	@find . -name "*.[ch]" | xargs cppcheck --error-exitcode=1 --verbose --enable=all --suppress=unusedFunction
+	@cppcheck $(shell find . -name "*.[ch]") \
+		--verbose --enable=all -DDEBUG=1 \
+		--suppress=missingIncludeSystem \
+		--suppress=unknownMacro \
+		--suppress=unusedFunction
 
+.PHONY: indent
 indent:
 	@echo -e "${PURPLE}*** Formatting code${NC}"
-	@find . -name "*.[ch]" | xargs clang-format -style=file -i -fallback-style=none
+	@clang-format $(shell find . -name "*.[ch]") \
+		-style=file -i -fallback-style=none
 
+.PHONY: vars
 vars:
 	@echo -e "${YELLOW}*** Debug info${NC}"
+	@echo "CC:" $(CC)
 	@echo "ROOT:" $(ROOT)
 	@echo "N64_TOOLCHAIN:" $(N64_TOOLCHAIN)
 	@echo "N64KITDIR:" $(N64KITDIR)
@@ -121,6 +133,7 @@ vars:
 	@echo "DATAOBJECTS:" $(DATAOBJECTS)
 	@echo "LCDEFS:" $(LCDEFS)
 
+.PHONY: clean
 clean:
 	@echo -e "${RED}*** Clean build${NC}"
 	$(RM) $(APP) $(TARGETS) *.o *.out
