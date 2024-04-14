@@ -7,25 +7,27 @@ Simple Nintendo64 application using Nintendo libraries.
 └── SimpleN64DemoNusys  // Demo using NuSystem abstraction layer
 ```
 
-## Setup toolchain
+## Setup toolchain and SDK
 
-<https://github.com/trhodeos/modern-n64sdk>
+### Building on host
+
+Debian/Ubuntu dev packages needed:
 
 ```bash
-git clone https://github.com/ErikMN/N64_SDK.git
+apt install build-essential libmpfr-dev libmpc-dev libgmp-dev flex bison texinfo cmake libgl1-mesa-dev libopenal-dev
 ```
 
-### Environment variables
-
-Set the following variables in your shell configuration file.
+Run
 
 ```bash
-export N64_ROOT=$HOME/N64DevLinux
-export N64KITDIR=$N64_ROOT/N64_SDK/nintendo/n64kit
-export N64_TOOLCHAIN=$N64_ROOT/N64_TOOLCHAIN
-export PATH="$N64_TOOLCHAIN/tools/bin:$PATH"
-export ROOT=$N64_ROOT/N64_SDK/ultra
-export GCCDIR=$ROOT/GCC
+./setup_n64_toolchain.sh
+```
+
+This will take a while (the n64chain will take about 1GB disk space when done). </br>
+After that just source the init script like so:
+
+```bash
+source init_n64_env.sh
 ```
 
 ## Problems
@@ -45,6 +47,10 @@ export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:$N64_TOOLCHAIN/tools/x86_64-pc-linux-gnu
 ## Emulators
 
 <https://github.com/n64dev/cen64>
+
+```bash
+alias cen64mt="cen64 -multithread -noaudio $N64_TOOL_CHAIN/tools/bin"
+```
 
 ## Misc
 
