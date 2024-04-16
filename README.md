@@ -30,6 +30,14 @@ After that just source the init script like so:
 source init_n64_env.sh
 ```
 
+### Building using Docker
+
+This is the easiest way to build the toolchain, just run:
+
+```bash
+make build
+```
+
 ## Problems
 
 If you get an error message when building stating something like:
