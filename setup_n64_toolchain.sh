@@ -1,4 +1,4 @@
-#!/bin/env bash
+#!/usr/bin/env bash
 #
 # Sets up the N64 toolchain on a modern Linux system using these resources:
 #
@@ -13,6 +13,7 @@ set -eu
 FMT_RED=$(printf '\033[31m')
 FMT_GREEN=$(printf '\033[32m')
 FMT_YELLOW=$(printf '\033[33m')
+FMT_BOLD=$(printf '\033[1m')
 FMT_RESET=$(printf '\033[0m')
 
 SCRIPT_DIR="$(dirname "$(readlink -f "$0")")"
@@ -22,12 +23,39 @@ N64_TOOL_CHAIN="$SCRIPT_DIR/n64chain"
 SPICY_VER="0.6.2"
 MAKEMASK_VER="0.2.2"
 
+OS=$(uname)
+ARCH=$(uname -m)
+PLATFORM="linux_amd64"
+
+# Check platform:
+if [ "$OS" = "Linux" ]; then
+  if [ "$ARCH" = "arm64" ]; then
+    PLATFORM="linux_arm64"
+  elif [ "$ARCH" = "x86_64" ]; then
+    PLATFORM="linux_amd64"
+  fi
+elif [ "$OS" = "Darwin" ]; then
+  if [ "$ARCH" = "arm64" ]; then
+    PLATFORM="darwin_arm64"
+  elif [ "$ARCH" = "x86_64" ]; then
+    PLATFORM="darwin_amd64"
+  fi
+else
+  echo "${FMT_BOLD}${FMT_RED}*** Unsupported platform: ${PLATFORM}${FMT_RESET}"
+  exit 1
+fi
+
+SPICY_URL="https://github.com/trhodeos/spicy/releases/download/v${SPICY_VER}/spicy_${SPICY_VER}_${PLATFORM}.tar.gz"
+MAKEMASK_URL="https://github.com/trhodeos/makemask/releases/download/v${MAKEMASK_VER}/makemask_${MAKEMASK_VER}_${PLATFORM}.tar.gz"
+SDK_URL="https://ultra64.ca/files/software/other/sdks/n64sdk.7z"
+PIF_URL="https://archive.org/download/mame-0.221-roms-merged/aleck64.zip/pifdata.bin"
+
 build_toolchain() {
   if [ -d "$N64_TOOL_CHAIN/tools/bin" ]; then
     echo "${FMT_YELLOW}*** N64 toolchain is already setup?${FMT_RESET}"
     return 0
   fi
-  echo "${FMT_GREEN}*** Build N64 toolchain${FMT_RESET}"
+  echo "${FMT_BOLD}${FMT_GREEN}*** Build N64 toolchain${FMT_RESET}"
   git clone https://github.com/tj90241/n64chain.git "$N64_TOOL_CHAIN" || echo "${FMT_YELLOW}*** N64 toolchain already cloned${FMT_RESET}"
 
   BUILD_SCRIPT="$N64_TOOL_CHAIN/tools/build-posix64-toolchain.sh"
@@ -53,25 +81,25 @@ intall_tools() {
   echo "${FMT_GREEN}*** Setup SDK and tools${FMT_RESET}"
 
   # Download SDK and tools:
-  wget -nc -P "$N64_TOOL_CHAIN" https://ultra64.ca/files/software/other/sdks/n64sdk.7z || {
+  wget -nc -P "$N64_TOOL_CHAIN" "$SDK_URL" || {
     echo "${FMT_RED}*** Failed to download N64 SDK${FMT_RESET}"
     return 1
   }
-  wget -nc -P "$N64_TOOL_CHAIN" https://github.com/trhodeos/spicy/releases/download/v${SPICY_VER}/spicy_${SPICY_VER}_linux_amd64.tar.gz || {
+  wget -nc -P "$N64_TOOL_CHAIN" "$SPICY_URL" || {
     echo "${FMT_RED}*** Failed to download spicy${FMT_RESET}"
     return 1
   }
-  wget -nc -P "$N64_TOOL_CHAIN" https://github.com/trhodeos/makemask/releases/download/v${MAKEMASK_VER}/makemask_${MAKEMASK_VER}_linux_amd64.tar.gz || {
+  wget -nc -P "$N64_TOOL_CHAIN" "$MAKEMASK_URL" || {
     echo "${FMT_RED}*** Failed to download makemask${FMT_RESET}"
     return 1
   }
 
   # Install tools:
-  tar -xzf "$N64_TOOL_CHAIN/spicy_${SPICY_VER}_linux_amd64.tar.gz" --directory="$N64_TOOL_CHAIN/tools/bin" spicy || {
+  tar -xzf "$N64_TOOL_CHAIN/spicy_${SPICY_VER}_${PLATFORM}.tar.gz" --directory="$N64_TOOL_CHAIN/tools/bin" spicy || {
     echo "${FMT_RED}*** Failed to  install spicy${FMT_RESET}"
     return 1
   }
-  tar -xzf "$N64_TOOL_CHAIN/makemask_${MAKEMASK_VER}_linux_amd64.tar.gz" --directory="$N64_TOOL_CHAIN/tools/bin" makemask || {
+  tar -xzf "$N64_TOOL_CHAIN/makemask_${MAKEMASK_VER}_${PLATFORM}.tar.gz" --directory="$N64_TOOL_CHAIN/tools/bin" makemask || {
     echo "${FMT_RED}*** Failed to  install makemask${FMT_RESET}"
     return 1
   }
@@ -149,7 +177,7 @@ setup_emulator() {
     echo "${FMT_RED}*** Failed to copy N64 emulator to N64 toolchain${FMT_RESET}"
     return 1
   }
-  wget -nc -P "$N64_TOOL_CHAIN/tools/bin" https://archive.org/download/mame-0.221-roms-merged/aleck64.zip/pifdata.bin || {
+  wget -nc -P "$N64_TOOL_CHAIN/tools/bin" "$PIF_URL" || {
     echo "${FMT_RED}*** Failed to download pifdata${FMT_RESET}"
     return 1
   }
@@ -159,4 +187,4 @@ setup_emulator() {
 build_toolchain || exit 1
 intall_tools || exit 1
 setup_emulator || exit 1
-echo "${FMT_GREEN}*** N64 toolchain and SDK setup OK!${FMT_RESET}"
+echo "${FMT_BOLD}${FMT_GREEN}*** N64 toolchain and SDK setup OK!${FMT_RESET}"
