@@ -1,21 +1,25 @@
 DOCKER_IMG := n64_tool_chain_img
 DOCKER := $(shell command -v docker 2> /dev/null)
-DIR := $(shell pwd)
+
+d := $(CURDIR)
 
 # Run Docker cmd with provided image:
 DOCKER_CMD := docker run --rm -i -t \
-              -w $(DIR) \
+              -w $(d) \
               -u $(shell id -u):$(shell id -g) \
-              -v $(DIR):$(DIR) \
+              -v $(d):$(d) \
               -v /etc/passwd:/etc/passwd \
-              -v /etc/group:/etc/group \
+              -v /etc/group:/etc/group
 
 # Print help:
 .PHONY: help
 help:
 	@echo "Available targets:"
 	@echo "  setup          : Create the Docker image $(DOCKER_IMG)"
-	@echo "  build          : Build the N64 toolchain in this directory"
+	@echo "  build          : Build the N64 apps"
+	@echo "  dockerrun      : Log in to the Docker image"
+	@echo "  dockerlist     : List Docker image"
+	@echo "  clean          : Clean build artifacts"
 
 # Check that Docker is installed:
 .PHONY: checkdocker
@@ -29,7 +33,23 @@ endif
 setup: checkdocker
 	@docker build -t $(DOCKER_IMG) .
 
-# Build the N64 toolchain:
+# Build the N64 apps:
 .PHONY: build
-build: checkdocker setup
-	@$(DOCKER_CMD) $(DOCKER_IMG) ./setup_n64_toolchain.sh
+build:
+	@$(DOCKER_CMD) $(DOCKER_IMG) ./build.sh
+
+# Run docker image:
+.PHONY: dockerrun
+dockerrun: checkdocker
+	@$(DOCKER_CMD) $(DOCKER_IMG)
+
+# List Docker image:
+.PHONY: dockerlist
+dockerlist: checkdocker
+	@docker image list $(DOCKER_IMG)
+
+# Clean build artifacts:
+.PHONY: clean
+clean:
+	$(MAKE) -C SimpleN64Demo clean
+	$(MAKE) -C SimpleN64DemoNusys clean

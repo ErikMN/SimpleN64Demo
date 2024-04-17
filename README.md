@@ -35,8 +35,16 @@ source init_n64_env.sh
 This is the easiest way to build the toolchain, just run:
 
 ```bash
+make setup
+```
+
+Then run:
+
+```bash
 make build
 ```
+
+To build the N64 apps.
 
 ## Problems
 

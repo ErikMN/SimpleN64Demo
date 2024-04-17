@@ -3,4 +3,4 @@
 *.n64
 core
 .vscode/*.log
-n64chain
+n64chain*
