@@ -1,6 +1,7 @@
 DOCKER_IMG := n64_tool_chain_img
 DOCKER := $(shell command -v docker 2> /dev/null)
 
+SHELL := $(shell which sh)
 d := $(CURDIR)
 
 # Run Docker cmd with provided image:
