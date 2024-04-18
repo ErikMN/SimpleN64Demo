@@ -5,12 +5,16 @@ SHELL := $(shell which sh)
 d := $(CURDIR)
 
 # Run Docker cmd with provided image:
-DOCKER_CMD := docker run --rm -i -t \
+# https://dzone.com/articles/docker-x11-client-via-ssh
+DOCKER_CMD := docker run --rm -it \
               -w $(d) \
               -u $(shell id -u):$(shell id -g) \
               -v $(d):$(d) \
-              -v /etc/passwd:/etc/passwd \
-              -v /etc/group:/etc/group
+              -v /etc/passwd:/etc/passwd:ro \
+              -v /etc/group:/etc/group:ro \
+              --net=host \
+              -e DISPLAY \
+              -v $(HOME)/.Xauthority:/root/.Xauthority:rw
 
 # Print help:
 .PHONY: help
