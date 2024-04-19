@@ -11,13 +11,13 @@ Simple Nintendo64 application using Nintendo libraries.
 
 ### Building on host
 
-Debian/Ubuntu dev packages needed:
+For Debian/Ubuntu run:
 
 ```bash
-apt install build-essential libmpfr-dev libmpc-dev libgmp-dev flex bison texinfo cmake libgl1-mesa-dev libopenal-dev
+make deps
 ```
 
-Run
+then run:
 
 ```bash
 ./setup_n64_toolchain.sh

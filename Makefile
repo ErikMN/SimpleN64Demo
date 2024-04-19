@@ -1,5 +1,6 @@
 DOCKER_IMG := n64_tool_chain_img
 DOCKER := $(shell command -v docker 2> /dev/null)
+APT := $(shell command -v apt 2> /dev/null)
 
 SHELL := $(shell which sh)
 d := $(CURDIR)
@@ -24,6 +25,7 @@ help:
 	@echo "  build          : Build the N64 apps"
 	@echo "  dockerrun      : Log in to the Docker image"
 	@echo "  dockerlist     : List Docker image"
+	@echo "  deps           : Install Linux host dependencies for Debian/Ubuntu"
 	@echo "  clean          : Clean build artifacts"
 
 # Check that Docker is installed:
@@ -40,7 +42,7 @@ setup: checkdocker
 
 # Build the N64 apps:
 .PHONY: build
-build:
+build: checkdocker
 	@$(DOCKER_CMD) $(DOCKER_IMG) ./build.sh
 
 # Run docker image:
@@ -52,6 +54,15 @@ dockerrun: checkdocker
 .PHONY: dockerlist
 dockerlist: checkdocker
 	@docker image list $(DOCKER_IMG)
+
+.PHONY: deps
+deps:
+ifdef APT
+	@echo "*** Installing host dependencies"
+	@xargs -a dependencies.txt sudo apt install -y
+else
+  $(error This system does not support APT)
+endif
 
 # Clean build artifacts:
 .PHONY: clean

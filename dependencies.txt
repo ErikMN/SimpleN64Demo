@@ -1,0 +1,14 @@
+bison
+build-essential
+ca-certificates
+cmake
+flex
+git
+libgl1-mesa-dev
+libgmp-dev
+libmpc-dev
+libmpfr-dev
+libopenal-dev
+p7zip-full
+texinfo
+wget

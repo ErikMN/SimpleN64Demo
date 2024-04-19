@@ -1,23 +1,10 @@
 FROM ubuntu:latest
 
+COPY dependencies.txt /opt/
+
 RUN apt-get update && \
-  apt-get install -y -f --no-install-recommends \
-  git \
-  ca-certificates \
-  wget \
-  build-essential \
-  libmpfr-dev \
-  libmpc-dev \
-  libgmp-dev \
-  flex \
-  bison \
-  texinfo \
-  p7zip-full \
-  cmake \
-  libgl1-mesa-dev \
-  libopenal-dev && \
-  apt-get clean && \
-  rm -rf /var/lib/apt/lists/*
+  xargs -a /opt/dependencies.txt apt-get install -y -f --no-install-recommends && \
+  apt-get clean && rm -rf /var/lib/apt/lists/*
 
 COPY setup_n64_toolchain.sh /opt/
 COPY init_n64_env.sh /opt/
