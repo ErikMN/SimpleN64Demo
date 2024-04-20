@@ -1,4 +1,4 @@
-# SimpleN64Demo <img src="n64.svg" width="40" alt="logo"/>
+# SimpleN64Demo <img src="img/n64.svg" width="32" alt="N64 logo"/>
 
 Simple Nintendo64 application using Nintendo libraries.
 

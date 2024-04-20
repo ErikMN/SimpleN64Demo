@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<svg viewBox="-577.9761 -178.5329 552.444 551.696" xmlns="http://www.w3.org/2000/svg">
+  <g style="display:inline" id="layer2" transform="matrix(1, 0, 0, 1, -650.6140747070312, -309.4039306640625)">
+    <polygon points="348.859,190.552 285.138,304.273 348.859,279.855 409.681,303.144 425.969,284.864 425.969,160.65 348.859,190.552 " style="fill:#0222a9;fill-opacity:1;fill-rule:evenodd" id="polygon3542"/>
+    <polygon points="546.82,599.126 431.729,448.924 431.729,647.514 348.859,682.567 348.859,343.34 431.729,311.605 546.82,476.102 546.82,266.959 625.082,236.777 625.082,566.257 546.82,599.126 " style="fill:#011da9;fill-opacity:1;fill-rule:evenodd" id="polygon3558"/>
+    <polygon points="150.899,599.126 224.326,566.618 150.899,424.061 150.899,599.126 " style="fill:#0222a9;fill-opacity:1;fill-rule:evenodd" id="polygon3560"/>
+  </g>
+  <g id="layer3" transform="matrix(1, 0, 0, 1, -650.6140747070312, -309.4039306640625)">
+    <polygon points="229.163,236.777 265.997,311.596 285.138,304.273 348.859,190.552 271.745,160.563 229.163,236.777 " style="fill:#069330;fill-opacity:1;fill-rule:evenodd" id="polygon3538"/>
+    <polygon points="409.681,303.144 468.582,236.777 546.82,266.959 546.82,476.102 431.729,311.605 409.681,303.144 " style="fill:#069330;fill-opacity:1;fill-rule:evenodd" id="polygon3540"/>
+    <polygon points="150.899,266.959 72.638,236.777 72.638,566.257 150.899,599.126 150.899,424.061 265.997,647.514 348.859,682.567 348.859,343.34 265.997,311.596 265.997,483.808 150.899,266.959 " style="fill:#069330;fill-opacity:1;fill-rule:evenodd" id="polygon3552"/>
+  </g>
+  <g id="layer4" transform="matrix(1, 0, 0, 1, -650.6140747070312, -309.4039306640625)">
+    <polygon points="265.997,311.596 265.997,483.808 150.899,266.959 229.163,236.777 265.997,311.596 " style="fill:#fe2015;fill-opacity:1;fill-rule:evenodd" id="polygon3554"/>
+    <polygon points="546.82,599.126 431.729,448.924 431.729,530.988 455.231,563.957 546.82,599.126 " style="fill:#fe2015;fill-opacity:1;fill-rule:evenodd" id="polygon3556"/>
+  </g>
+  <g id="layer5" transform="matrix(1, 0, 0, 1, -650.6140747070312, -309.4039306640625)">
+    <polygon points="431.729,311.596 348.859,343.34 265.997,311.596 348.859,279.855 431.729,311.596 " style="fill:#ffc001;fill-opacity:1;fill-rule:evenodd" id="polygon3544"/>
+    <polygon points="468.551,236.777 546.82,206.669 625.082,236.777 546.82,266.959 468.551,236.777 " style="fill:#ffc001;fill-opacity:1;fill-rule:evenodd" id="polygon3546"/>
+    <polygon points="72.638,236.777 150.899,206.669 229.163,236.777 150.899,266.959 72.638,236.777 " style="fill:#ffc001;fill-opacity:1;fill-rule:evenodd" id="polygon3548"/>
+    <polygon points="425.969,160.65 348.859,130.871 271.745,160.563 348.859,190.552 425.969,160.65 " style="fill:#ffc001;fill-opacity:1;fill-rule:evenodd" id="polygon3550"/>
+  </g>
+</svg>
