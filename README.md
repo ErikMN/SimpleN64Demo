@@ -68,6 +68,27 @@ export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:$N64_TOOLCHAIN/tools/x86_64-pc-linux-gnu
 alias cen64mt="cen64 -multithread -noaudio $N64_TOOL_CHAIN/tools/bin"
 ```
 
+## Debugging using VSCode and GDB
+
+It is possible to debug the N64 app using GDB. </br>
+This has been setup with Visual Studio Code. </br>
+
+### Prerequisites
+
+* [Visual Studio Code](https://code.visualstudio.com/)
+* [C/C++ Extension Pack](https://marketplace.visualstudio.com/items?itemName=ms-vscode.cpptools-extension-pack)
+* gdb-multiarch (GNU Debugger with support for multiple architectures)
+
+With cen64 setup as the N64 emulator just run:
+
+```bash
+make debug
+```
+
+to start the GDB server on port 8080. </br>
+Then press ```F5``` in VSCode to connect to the GDB server. </br>
+If a breakpoint has been set in the code, GDB will pause the execution at that point.
+
 ## Misc
 
 ### Useful links
