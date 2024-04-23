@@ -1,9 +1,9 @@
 FROM ubuntu:latest
 
-COPY dependencies.txt /opt/
+COPY pkg/debian_dependencies.txt /opt/
 
 RUN apt-get update && \
-  xargs -a /opt/dependencies.txt apt-get install -y -f --no-install-recommends && \
+  xargs -a /opt/debian_dependencies.txt apt-get install -y -f --no-install-recommends && \
   apt-get clean && rm -rf /var/lib/apt/lists/*
 
 COPY setup_n64_toolchain.sh /opt/

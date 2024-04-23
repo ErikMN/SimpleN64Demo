@@ -1,0 +1,17 @@
+bison
+ca-certificates
+cmake
+flex
+gcc
+gcc-c++
+git
+gmp-devel
+libmpc-devel
+make
+mesa-libGL-devel
+mpfr-devel
+openal-soft-devel
+p7zip
+p7zip-plugins
+texinfo
+wget

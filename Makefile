@@ -1,6 +1,8 @@
 DOCKER_IMG := n64_tool_chain_img
 DOCKER := $(shell command -v docker 2> /dev/null)
+OS := $(shell uname)
 APT := $(shell command -v apt 2> /dev/null)
+DNF := $(shell command -v dnf 2> /dev/null)
 
 SHELL := $(shell which sh)
 d := $(CURDIR)
@@ -57,11 +59,18 @@ dockerlist: checkdocker
 
 .PHONY: deps
 deps:
+ifeq ($(OS), Linux)
 ifdef APT
-	@echo "*** Installing host dependencies"
-	@xargs -a dependencies.txt sudo apt install -y
+	@echo "*** Installing host dependencies using APT"
+	@xargs -a ./pkg/debian_dependencies.txt sudo apt install -y
+else ifdef DNF
+	@echo "*** Installing host dependencies using DNF"
+	@sudo dnf install -y `cat ./pkg/fedora_dependencies.txt`
 else
-  $(error This system does not support APT)
+	$(error This system does not support APT or DNF)
+endif
+else
+	$(error $(OS) is not supported)
 endif
 
 # Clean build artifacts:
