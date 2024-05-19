@@ -96,11 +96,11 @@ intall_tools() {
 
   # Install tools:
   tar -xzf "$N64_TOOL_CHAIN/spicy_${SPICY_VER}_${PLATFORM}.tar.gz" --directory="$N64_TOOL_CHAIN/tools/bin" spicy || {
-    echo "${FMT_RED}*** Failed to  install spicy${FMT_RESET}"
+    echo "${FMT_RED}*** Failed to install spicy${FMT_RESET}"
     return 1
   }
   tar -xzf "$N64_TOOL_CHAIN/makemask_${MAKEMASK_VER}_${PLATFORM}.tar.gz" --directory="$N64_TOOL_CHAIN/tools/bin" makemask || {
-    echo "${FMT_RED}*** Failed to  install makemask${FMT_RESET}"
+    echo "${FMT_RED}*** Failed to install makemask${FMT_RESET}"
     return 1
   }
 

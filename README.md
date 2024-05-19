@@ -7,6 +7,8 @@ Simple Nintendo64 application using Nintendo libraries.
 └── SimpleN64DemoNusys  // Demo using NuSystem abstraction layer
 ```
 
+<img src="img/screenshot1.png" width="400" alt="N64 demo"/>
+
 ## Setup toolchain and SDK
 
 ### Building on host
