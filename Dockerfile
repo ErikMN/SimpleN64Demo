@@ -1,4 +1,4 @@
-FROM ubuntu:latest
+FROM ubuntu:noble
 
 COPY pkg/debian_dependencies.txt /opt/
 
