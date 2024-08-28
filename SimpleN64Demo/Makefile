@@ -7,6 +7,7 @@ PURPLE=\033[0;35m
 CYAN=\033[0;36m
 YELLOW=\033[1;33m
 NC=\033[0m # No color
+ECHO := echo -e
 
 BINDIR = $(N64_TOOLCHAIN)/tools/bin
 
@@ -68,16 +69,16 @@ all: $(TARGETS)
 
 # Make the codesegment:
 $(CODESEGMENT): $(CODEOBJECTS)
-	@echo "${CYAN}*** Linking codesegment from ${LIGHT_RED}$(CODEOBJECTS)${NC}"
+	@$(ECHO) "${CYAN}*** Linking codesegment from ${LIGHT_RED}$(CODEOBJECTS)${NC}"
 	$(LD) -o $(CODESEGMENT) -r $(CODEOBJECTS) $(LDFLAGS)
 
 # Make the ROM file:
 $(TARGETS) $(APP): spec $(OBJECTS)
-	@echo "${PURPLE}*** Making ROM${NC}"
+	@$(ECHO) "${PURPLE}*** Making ROM${NC}"
 	$(MAKEROM) -s 9 -r $(TARGETS) -e $(APP) spec
-	@echo "${BLUE}*** Masking ROM${NC}"
+	@$(ECHO) "${BLUE}*** Masking ROM${NC}"
 	$(MAKEMASK) $(TARGETS)
-	@echo "\e[32m*** Done! Output: ${YELLOW}$(TARGETS)\e[0m"
+	@$(ECHO) "\e[32m*** Done! Output: ${YELLOW}$(TARGETS)\e[0m"
 
 # Run using CEN64:
 .PHONY: run
@@ -96,7 +97,7 @@ debug:
 
 .PHONY: cppcheck
 cppcheck:
-	@echo "${PURPLE}*** Static code analysis${NC}"
+	@$(ECHO) "${PURPLE}*** Static code analysis${NC}"
 	@cppcheck $(shell find . -name "*.[ch]") \
 		--verbose --enable=all -DDEBUG=1 \
 		--suppress=missingIncludeSystem \
@@ -105,7 +106,7 @@ cppcheck:
 
 .PHONY: indent
 indent:
-	@echo "${PURPLE}*** Formatting code${NC}"
+	@$(ECHO) "${PURPLE}*** Formatting code${NC}"
 	@clang-format $(shell find . -name "*.[ch]") \
 		-style=file -i -fallback-style=none
 
@@ -130,5 +131,5 @@ vars:
 
 .PHONY: clean
 clean:
-	@echo "${RED}*** Clean build${NC}"
+	@$(ECHO) "${RED}*** Clean build${NC}"
 	$(RM) $(APP) $(TARGETS) *.o *.out
