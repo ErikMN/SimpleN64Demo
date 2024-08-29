@@ -26,8 +26,7 @@
 typedef struct {
   Mtx projection;
   Mtx modeling;
-  Mtx viewing;
-  Mtx identity;
+  Mtx rotate;
   Gfx glist[GLIST_LEN];
 } Dynamic;
 

@@ -87,6 +87,7 @@ static Vtx shade_tri_vtx[] = {
 Gfx shadetri_simple_dl[] = {
   gsSPMatrix(OS_K0_TO_PHYSICAL(&(dynamic.projection)), G_MTX_PROJECTION | G_MTX_LOAD | G_MTX_NOPUSH),
   gsSPMatrix(OS_K0_TO_PHYSICAL(&(dynamic.modeling)), G_MTX_MODELVIEW | G_MTX_LOAD | G_MTX_NOPUSH),
+  gsSPMatrix(OS_K0_TO_PHYSICAL(&(dynamic.rotate)), G_MTX_MODELVIEW | G_MTX_MUL | G_MTX_NOPUSH),
   /*
    * Setup display modes antialiased in 1 cycle
    */
@@ -156,6 +157,7 @@ static Vtx shade_cube_vtx[] = {
 Gfx shade_cube_dl[] = {
   gsSPMatrix(OS_K0_TO_PHYSICAL(&(dynamic.projection)), G_MTX_PROJECTION | G_MTX_LOAD | G_MTX_NOPUSH),
   gsSPMatrix(OS_K0_TO_PHYSICAL(&(dynamic.modeling)), G_MTX_MODELVIEW | G_MTX_LOAD | G_MTX_NOPUSH),
+  gsSPMatrix(OS_K0_TO_PHYSICAL(&(dynamic.rotate)), G_MTX_MODELVIEW | G_MTX_MUL | G_MTX_NOPUSH),
 
   // Setup display modes antialiased in 1 cycle
   gsDPPipeSync(),
@@ -226,6 +228,7 @@ static Vtx tex_vtx[] = {
 Gfx textri_dl[] = {
   gsSPMatrix(OS_K0_TO_PHYSICAL(&(dynamic.projection)), G_MTX_PROJECTION | G_MTX_LOAD | G_MTX_NOPUSH),
   gsSPMatrix(OS_K0_TO_PHYSICAL(&(dynamic.modeling)), G_MTX_MODELVIEW | G_MTX_LOAD | G_MTX_NOPUSH),
+  gsSPMatrix(OS_K0_TO_PHYSICAL(&(dynamic.rotate)), G_MTX_MODELVIEW | G_MTX_MUL | G_MTX_NOPUSH),
   gsDPPipeSync(),
   gsDPSetCycleType(G_CYC_1CYCLE),
   gsDPSetRenderMode(G_RM_AA_OPA_SURF, G_RM_AA_OPA_SURF2),

@@ -116,6 +116,7 @@ mainproc(void *arg)
   OSTask *tlistp;
   Dynamic *dynamicp;
   OSContPad **pad;
+  u16 *perspNorm;
   char *staticSegment;
   int toggle = 0;
 
@@ -153,21 +154,20 @@ mainproc(void *arg)
     tlistp = &tlist;
     dynamicp = &dynamic;
 
-    guOrtho(&dynamicp->projection,
-            -(float)SCREEN_WD / 2.0F,
-            (float)SCREEN_WD / 2.0F,
-            -(float)SCREEN_HT / 2.0F,
-            (float)SCREEN_HT / 2.0F,
-            -999.0F,
-            999.0F,
-            1.0F);
+    // Creates a perspective projection matrix
+    guPerspective(&dynamicp->projection,           // Pointer to the resulting 4x4 projection matrix
+                  perspNorm,                       // Pointer to the resulting numerical value
+                  60.0F,                           // The angle of view in the vertical (y) direction
+                  (f32)SCREEN_WD / (f32)SCREEN_HT, // The aspect ratio
+                  10.0F,                           // Distance from viewpoint to near clipping plane
+                  999.0F,                          // Distance from viewpoint to far clipping plane
+                  1.0F);                           // Scale for matrix elements
 
-    // Make it move:
-    // guRotate(&dynamicp->modeling, theta, 0.0F, 0.0F, 1.0F); // rotate z
+    // Creates a modeling matrix for rotation around an arbitrary axis
+    guRotate(&dynamicp->rotate, theta, 0.0F, 1.0F, 1.0F); // a, x, y, z
 
-    guRotate(&dynamicp->modeling, theta, 0, 1, 1); // a, x, y, z
-    // guTranslate(&dynamicp->modeling, theta, theta, 0.0f); // move the tri
-    // guScale(&dynamicp->modeling, theta, theta, 0.0f);
+    // Creates a translation modeling matrix
+    guTranslate(&dynamicp->modeling, 0.0F, 0.0F, -300.0F); // x, y, z translation
 
     glistp = dynamicp->glist;
 
