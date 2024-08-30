@@ -1,6 +1,8 @@
 *.o
 *.out
 *.n64
+SimpleN64Demo/*.txt
 core
 .vscode/*.log
 n64chain*
+script.ld

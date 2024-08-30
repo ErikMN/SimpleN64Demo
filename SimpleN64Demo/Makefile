@@ -14,6 +14,7 @@ BINDIR = $(N64_TOOLCHAIN)/tools/bin
 # Compiler, linker and binary tools:
 CC = $(BINDIR)/mips64-elf-gcc
 LD = $(BINDIR)/mips64-elf-ld
+OBJCOPY = $(BINDIR)/mips64-elf-objcopy
 MAKEROM = $(BINDIR)/spicy
 MAKEMASK = $(BINDIR)/makemask
 PIFDATA = $(BINDIR)/pifdata.bin
@@ -55,6 +56,13 @@ CODEOBJECTS = $(CODEFILES:.c=.o)
 DATAFILES = static.c cfb.c rsp_cfb.c zbuffer.c
 DATAOBJECTS = $(DATAFILES:.c=.o)
 
+ASMFILES = $(shell find asm/ -type f -name '*.s')
+ASMOBJECTS = $(ASMFILES:.s=.o)
+
+# BOOT = $(ROOT)/usr/lib/PR/bootcode/boot.6102
+# BOOT_OBJ = build/boot.6102.o
+
+# Used in the spec file:
 CODESEGMENT = codesegment.o
 
 OBJECTS = $(CODESEGMENT) $(DATAOBJECTS)
@@ -67,18 +75,41 @@ LDIRT = $(APP)
 .PHONY: all
 all: $(TARGETS)
 
-# Make the codesegment:
+# Make the codesegment (all files in CODEFILES):
 $(CODESEGMENT): $(CODEOBJECTS)
 	@$(ECHO) "${CYAN}*** Linking codesegment from ${LIGHT_RED}$(CODEOBJECTS)${NC}"
 	$(LD) -o $(CODESEGMENT) -r $(CODEOBJECTS) $(LDFLAGS)
 
-# Make the ROM file:
-$(TARGETS) $(APP): spec $(OBJECTS)
+# Make the ROM file using spicy(mild) (CODEFILES + DATAFILES):
+.PHONY: mild
+mild: $(OBJECTS)
 	@$(ECHO) "${PURPLE}*** Making ROM${NC}"
 	$(MAKEROM) -s 9 -r $(TARGETS) -e $(APP) spec
 	@$(ECHO) "${BLUE}*** Masking ROM${NC}"
 	$(MAKEMASK) $(TARGETS)
 	@$(ECHO) "\e[32m*** Done! Output: ${YELLOW}$(TARGETS)\e[0m"
+
+# Preprocess the linker script using cpp
+script.ld: script.ld.in
+	@echo "*** Preprocessing linker script with cpp ***"
+	@cpp -P -Wno-trigraphs -DROOT=$(ROOT) $(LCDEFS) -DCODE_SEGMENT=$(CODESEGMENT) -o $@ $<
+
+# Make the ROM file
+$(TARGETS) $(APP): $(OBJECTS) script.ld
+	@$(ECHO) "${PURPLE}*** Linking with GNU LD using script.ld${NC}"
+	$(LD) -L. -T script.ld -o $(APP) $(OBJECTS) $(LDFLAGS)
+
+	@$(ECHO) "${PURPLE}*** Converting ELF to Binary${NC}"
+	$(OBJCOPY) --pad-to=0x100000 --gap-fill=0xFF $(APP) $(TARGETS) -O binary
+
+	@$(ECHO) "${BLUE}*** Masking ROM${NC}"
+	$(MAKEMASK) $(TARGETS)
+
+	@$(ECHO) "\e[32m*** Done! Output: ${YELLOW}$(TARGETS)\e[0m"
+
+.PHONY: inspect
+inspect:
+	@./inspect.sh
 
 # Run using CEN64:
 .PHONY: run
@@ -132,4 +163,4 @@ vars:
 .PHONY: clean
 clean:
 	@$(ECHO) "${RED}*** Clean build${NC}"
-	$(RM) $(APP) $(TARGETS) *.o *.out
+	$(RM) $(APP) $(TARGETS) *.o *.out script.ld
