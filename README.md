@@ -1,6 +1,10 @@
 # SimpleN64Demo <img src="img/n64.svg" width="32" alt="N64 logo"/>
 
-Simple Nintendo64 application using Nintendo libraries.
+> **⚠️ Important:** These demo applications are **not affiliated** with Nintendo. </br>
+> **They are for educational purposes only.**
+
+A simple Nintendo 64 application using Nintendo libraries. </br>
+Includes a script for automatically setting up the N64 SDK on modern Linux distributions.
 
 ```text
 ├── SimpleN64Demo       // Demo using libultra
@@ -9,9 +13,9 @@ Simple Nintendo64 application using Nintendo libraries.
 
 <img src="img/screenshot1.png" width="400" alt="N64 demo"/>
 
-## Setup toolchain and SDK
+## 🔨 Setup toolchain and SDK
 
-### Building on host
+### Building natively on host
 
 For Debian/Ubuntu/Fedora run:
 
@@ -19,7 +23,10 @@ For Debian/Ubuntu/Fedora run:
 make deps
 ```
 
-then run:
+For other Linux distributions you will have to install the dependencies manually. </br>
+Look in the package list for Debian or Fedora to get an idea of what is needed.
+
+Then run:
 
 ```bash
 make hostsetup
@@ -93,9 +100,9 @@ to start the GDB server on port 8080. </br>
 Then press ```F5``` in VSCode to connect to the GDB server. </br>
 If a breakpoint has been set in the code, GDB will pause the execution at that point.
 
-## Misc
+## ⭐ Useful links
 
-### Useful links
+Developing software for the N64 can be challenging. Here are some useful links to help you get started.
 
 [Awesome N64 Development](https://n64.dev/)
 
@@ -103,7 +110,7 @@ If a breakpoint has been set in the code, GDB will pause the execution at that p
 
 [Nintendo 64 Online Manuals](https://ultra64.ca/files/documentation/online-manuals/man-v5-2/allman52/)
 
-[Nintendo N64 Source code Programming - A Basic Introduction](https://www.youtube.com/watch?v=68nFnspMPfM)
+[Nintendo 64 Architecture](https://www.copetti.org/writings/consoles/nintendo-64)
 
 [Debugging Nintendo 64 ROMs with GDB and Cen64](https://www.youtube.com/watch?v=IPiZqg-2CrA)
 
@@ -112,3 +119,7 @@ If a breakpoint has been set in the code, GDB will pause the execution at that p
 [Nintendo 64 Programming notes](https://badd10de.dev/notes/n64-programming.html)
 
 [Nintendo 64 modern SDK](https://crashoveride95.github.io/modernsdk/)
+
+[n64chain](https://github.com/tj90241/n64chain)
+
+[Nintendo 64 homebrew demo & tutorial](https://github.com/jsdf/n64-sdk-demo)
