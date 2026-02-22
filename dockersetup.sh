@@ -25,9 +25,15 @@ if ! command -v docker >/dev/null 2>&1; then
   exit 1
 fi
 
-# Remove previous export if it exists:
+# Reuse existing toolchain if already built:
+if [ -f "${OUT_DIR}/.toolchain_built" ]; then
+  echo "${FMT_YELLOW}*** Existing toolchain detected, reusing it${FMT_RESET}"
+  exit 0
+fi
+
+# Remove previous export if it exists but is incomplete:
 if [ -d "${OUT_DIR}" ]; then
-  echo "${FMT_YELLOW}*** Removing existing n64chain directory${FMT_RESET}"
+  echo "${FMT_YELLOW}*** Removing incomplete n64chain directory${FMT_RESET}"
   rm -rf "${OUT_DIR}"
 fi
 
