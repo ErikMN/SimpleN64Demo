@@ -1,7 +1,9 @@
 # SimpleN64Demo <img src="img/n64.svg" width="32" alt="N64 logo"/>
 
-> **⚠️ Important:** These demo applications are **not affiliated** with Nintendo. </br>
-> **They are for educational purposes only.**
+> **⚠️ IMPORTANT:** These demo applications are **not affiliated** with Nintendo. ⚠️</br>
+> **THEY ARE FOR EDUCATIONAL PURPOSES ONLY.**
+
+## What is this?
 
 A simple Nintendo 64 application using Nintendo libraries. </br>
 Includes a script for automatically setting up the N64 SDK on modern Linux distributions.
@@ -15,7 +17,36 @@ Includes a script for automatically setting up the N64 SDK on modern Linux distr
 
 ## 🔨 Setup toolchain and SDK
 
-### Building natively on host
+### Building using [Docker](https://docs.docker.com/get-docker/)
+
+This will build the n64chain in Docker without the need to install any host dependencies. \
+**This is the recommended way to setup the toolchain.**
+
+Run:
+
+```bash
+make dockersetup
+```
+
+Then optionally run:
+
+```bash
+make dockerbuild
+```
+
+To build the N64 apps (the Docker image takes about 3GB of disk space).
+
+Otherwise if on Linux just run:
+
+```bash
+source init_n64_env.sh
+```
+
+to initialize the environment to enable direct builds on host PC.
+
+### [OPTIONAL] Building toolchain natively on host
+
+**⚠️ NOTE: This might not work on modern distros with new versions of GCC.**
 
 For Debian/Ubuntu/Fedora run:
 
@@ -26,10 +57,10 @@ make deps
 For other Linux distributions you will have to install the dependencies manually. </br>
 Look in the package list for Debian or Fedora to get an idea of what is needed.
 
-Then run:
+Then directly run:
 
 ```bash
-make hostsetup
+./setup_n64_toolchain.sh
 ```
 
 This will take a while (the n64chain will take about 1GB of disk space when done). </br>
@@ -38,22 +69,6 @@ After that just source the init script like so (this will be done automatically 
 ```bash
 source init_n64_env.sh
 ```
-
-### Building using [Docker](https://docs.docker.com/get-docker/)
-
-This will build the n64chain in Docker without the need to install any host dependencies, just run:
-
-```bash
-make dockersetup
-```
-
-Then run:
-
-```bash
-make dockerbuild
-```
-
-To build the N64 apps (the Docker image takes about 2.5GB of disk space).
 
 ## Problems
 
