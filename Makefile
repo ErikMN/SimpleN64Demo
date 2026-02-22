@@ -79,6 +79,8 @@ else
 endif
 
 # Setup n64chain for host:
+# NOTE: this will be deprecated since host tools will be too new for the n64 toolchain
+# Use "make dockersetup" instead
 .PHONY: hostsetup
 hostsetup: checkdocker
 ifeq ($(OS), Linux)
