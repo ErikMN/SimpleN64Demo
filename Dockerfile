@@ -1,4 +1,4 @@
-FROM ubuntu:noble
+FROM ubuntu:noble AS builder
 
 COPY pkg/debian_dependencies.txt /opt/
 
@@ -14,8 +14,5 @@ RUN chmod +x /opt/setup_n64_toolchain.sh && chmod +x /opt/init_n64_env.sh
 # Execute setup_n64_toolchain.sh during image build:
 RUN /opt/setup_n64_toolchain.sh
 
-# NOTE: to avoid the need to run as root:
-RUN chmod -R 555 /opt/n64chain
-
-# Create portable artifact:
-RUN tar -C /opt -czf /n64chain.tar.gz n64chain
+FROM scratch
+COPY --from=builder /opt/n64chain /n64chain
