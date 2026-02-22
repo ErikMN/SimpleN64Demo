@@ -16,3 +16,6 @@ RUN /opt/setup_n64_toolchain.sh
 
 # NOTE: to avoid the need to run as root:
 RUN chmod -R 555 /opt/n64chain
+
+# Create portable artifact:
+RUN tar -C /opt -czf /n64chain.tar.gz n64chain
