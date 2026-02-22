@@ -40,6 +40,10 @@ export ROOT=$N64_ROOT/N64_SDK/ultra
 export GCCDIR=$ROOT/GCC
 export N64_DEMOS="$N64_ROOT/N64_SDK/ultra/usr/src/pr/demos"
 
+# NOTE: To set path to libopcodes:
+# ../mips64-elf/bin/as: error while loading shared libraries: libopcodes-2.34.so: cannot open shared object file: No such file or directory
+export LD_LIBRARY_PATH="$N64_ROOT/tools/x86_64-pc-linux-gnu/mips64-elf/lib:$LD_LIBRARY_PATH"
+
 echo "${FMT_GREEN}${FMT_BOLD}*** N64 TOOLCHAIN INITIALIZED ***${FMT_RESET}"
 echo "${FMT_BLUE}N64_ROOT:           $N64_ROOT${FMT_RESET}"
 echo "${FMT_BLUE}ROOT:               $ROOT${FMT_RESET}"
