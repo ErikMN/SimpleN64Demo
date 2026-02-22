@@ -44,7 +44,7 @@ endif
 # Setup n64chain using Docker:
 .PHONY: dockersetup
 dockersetup: checkdocker
-	@docker build -t $(DOCKER_IMG) .
+	@./dockersetup.sh
 
 # Build the N64 apps using Docker:
 .PHONY: dockerbuild
