@@ -29,8 +29,7 @@ help:
 	@echo "  dockerbuild    : Build the N64 apps using Docker"
 	@echo "  dockerrun      : Log in to the Docker image"
 	@echo "  dockerlist     : List Docker image"
-	@echo "  deps           : Install Linux host dependencies for Debian/Ubuntu/Fedora"
-	@echo "  hostsetup      : Setup n64chain for host"
+	@echo "  deps           : [OPTIONAL] Install Linux host dependencies for Debian/Ubuntu/Fedora"
 	@echo "  manual         : Open the online N64 manual"
 	@echo "  clean          : Clean build artifacts"
 
@@ -61,7 +60,7 @@ dockerrun: checkdocker
 dockerlist: checkdocker
 	@docker image list $(DOCKER_IMG)
 
-# Install host dependencies:
+# [OPTIONAL] Install host dependencies:
 .PHONY: deps
 deps:
 ifeq ($(OS), Linux)
@@ -74,17 +73,6 @@ else ifdef DNF
 else
 	$(error This system does not support APT or DNF)
 endif
-else
-	$(error $(OS) is not supported)
-endif
-
-# Setup n64chain for host:
-# NOTE: this will be deprecated since host tools will be too new for the n64 toolchain
-# Use "make dockersetup" instead
-.PHONY: hostsetup
-hostsetup: checkdocker
-ifeq ($(OS), Linux)
-	@./setup_n64_toolchain.sh
 else
 	$(error $(OS) is not supported)
 endif
