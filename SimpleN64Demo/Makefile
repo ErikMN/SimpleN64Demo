@@ -85,10 +85,10 @@ $(TARGETS) $(APP): spec $(OBJECTS)
 run: $(TARGETS)
 	@cen64 -multithread -noaudio $(PIFDATA) $(TARGETS)
 
-# Run using Mupen64Plus with specialized plugins:
-.PHONY: run_mupen
-run_mupen: $(TARGETS)
-	@mupen64plus --gfx mupen64plus-video-angrylion-plus --rsp mupen64plus-rsp-cxd4-sse2 $(TARGETS)
+# Run using gopher64:
+.PHONY: run_gopher
+run_gopher: $(TARGETS)
+	@$(BINDIR)/gopher64 $(TARGETS)
 
 # Debug using CEN64:
 .PHONY: debug

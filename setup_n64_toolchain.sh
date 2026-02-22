@@ -6,6 +6,7 @@
 # https://github.com/tj90241/n64chain
 # https://github.com/trhodeos/modern-n64sdk?tab=readme-ov-file
 # https://github.com/n64dev/cen64
+# https://github.com/gopher64/gopher64
 #
 set -eu
 
@@ -49,6 +50,9 @@ SPICY_URL="https://github.com/trhodeos/spicy/releases/download/v${SPICY_VER}/spi
 MAKEMASK_URL="https://github.com/trhodeos/makemask/releases/download/v${MAKEMASK_VER}/makemask_${MAKEMASK_VER}_${PLATFORM}.tar.gz"
 SDK_URL="https://ultra64.ca/files/software/other/sdks/n64sdk.7z"
 PIF_URL="https://archive.org/download/mame-0.221-roms-merged/aleck64.zip/pifdata.bin"
+
+GOPHER64_VER="1.1.14"
+GOPHER64_URL="https://github.com/gopher64/gopher64/releases/download/v${GOPHER64_VER}/gopher64-linux-x86_64"
 
 build_toolchain() {
   if [ -d "$N64_TOOL_CHAIN/tools/bin" ]; then
@@ -181,6 +185,19 @@ setup_emulator() {
     echo "${FMT_RED}*** Failed to download pifdata${FMT_RESET}"
     return 1
   }
+  # Install gopher64 (Linux only):
+  if [ "$OS" = "Linux" ]; then
+    if [ -e "$N64_TOOL_CHAIN/tools/bin/gopher64" ]; then
+      echo "${FMT_YELLOW}*** gopher64 is already installed${FMT_RESET}"
+    else
+      echo "${FMT_GREEN}*** Setup gopher64 emulator${FMT_RESET}"
+      wget -nc -O "$N64_TOOL_CHAIN/tools/bin/gopher64" "$GOPHER64_URL" || {
+        echo "${FMT_RED}*** Failed to download gopher64${FMT_RESET}"
+        return 1
+      }
+      chmod +x "$N64_TOOL_CHAIN/tools/bin/gopher64"
+    fi
+  fi
 }
 
 # Run the setup functions:

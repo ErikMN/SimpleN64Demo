@@ -71,7 +71,11 @@ export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:$N64_TOOLCHAIN/tools/x86_64-pc-linux-gnu
 
 ## Emulators
 
-[Cen64](https://github.com/n64dev/cen64) is included when setting up the n64chain.
+[gopher64](https://github.com/gopher64/gopher64) is included when setting up the n64chain.
+
+[Cen64](https://github.com/n64dev/cen64) is also included when setting up the n64chain.
+
+A useful alias for running cen64 with multithread support:
 
 ```bash
 alias cen64mt="cen64 -multithread -noaudio $N64_TOOL_CHAIN/tools/bin"
