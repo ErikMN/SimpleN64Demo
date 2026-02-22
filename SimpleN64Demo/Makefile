@@ -81,13 +81,13 @@ $(TARGETS) $(APP): spec $(OBJECTS)
 	@$(ECHO) "\e[32m*** Done! Output: ${YELLOW}$(TARGETS)\e[0m"
 
 # Run using CEN64:
-.PHONY: run
-run: $(TARGETS)
+.PHONY: run2
+run2: $(TARGETS)
 	@cen64 -multithread -noaudio $(PIFDATA) $(TARGETS)
 
 # Run using gopher64:
-.PHONY: run_gopher
-run_gopher: $(TARGETS)
+.PHONY: run
+run: $(TARGETS)
 	@$(BINDIR)/gopher64 $(TARGETS)
 
 # Debug using CEN64:
