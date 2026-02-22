@@ -8,6 +8,9 @@
 # https://github.com/n64dev/cen64
 # https://github.com/gopher64/gopher64
 #
+# NOTE: It is recommended to run this script inside a Docker container to avoid
+# issues with modern host tools. Please see dockersetup.sh for more details.
+#
 set -eu
 
 # Print colors:

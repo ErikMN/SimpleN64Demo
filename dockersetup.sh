@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
 #
-# Export n64chain built inside Docker to host workspace.
+# Export n64chain built for Linux inside Docker to host workspace.
+# This is the recommended way to setup the n64chain on modern Linux hosts.
 #
 set -eu
 
