@@ -19,6 +19,11 @@ FMT_RESET=$(printf '\033[0m')
 
 SCRIPT_DIR="$(dirname "$(readlink -f "$0")")"
 
+FORCE_REBUILD=0
+if [ "${1:-}" = "--rebuild" ]; then
+  FORCE_REBUILD=1
+fi
+
 N64_TOOL_CHAIN="$SCRIPT_DIR/n64chain"
 
 SPICY_VER="0.6.2"
@@ -55,8 +60,8 @@ GOPHER64_VER="1.1.14"
 GOPHER64_URL="https://github.com/gopher64/gopher64/releases/download/v${GOPHER64_VER}/gopher64-linux-x86_64"
 
 build_toolchain() {
-  if [ -d "$N64_TOOL_CHAIN/tools/bin" ]; then
-    echo "${FMT_YELLOW}*** N64 toolchain is already setup?${FMT_RESET}"
+  if [ "$FORCE_REBUILD" -eq 0 ] && [ -f "$N64_TOOL_CHAIN/.toolchain_built" ]; then
+    echo "${FMT_YELLOW}*** N64 toolchain already built${FMT_RESET}"
     return 0
   fi
   echo "${FMT_BOLD}${FMT_GREEN}*** Build N64 toolchain${FMT_RESET}"
@@ -205,3 +210,4 @@ build_toolchain || exit 1
 intall_tools || exit 1
 setup_emulator || exit 1
 echo "${FMT_BOLD}${FMT_GREEN}*** N64 toolchain and SDK setup OK!${FMT_RESET}"
+touch "$N64_TOOL_CHAIN/.toolchain_built"
